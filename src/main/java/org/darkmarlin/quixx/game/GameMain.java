@@ -45,7 +45,6 @@ public class GameMain {
             player.setScore(player.getPlaySheet().getPoints());
         }
 
-        Arrays.sort(players);
         done = true;
     }
 
