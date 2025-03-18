@@ -59,31 +59,34 @@ public class PlaySheet {
             if(number == i){found = true; break;}
         }
         if(!found){throw new IllegalArgumentException("This move is not allowed: " + row + ":" + number);}
+
         switch(row){
             case RED -> {
                 red[number - 2] = true;
                 furthestRed = number;
+                if(number == 12 && game.lock(row)) {
+                    red[11] = true;
+                }
             }
             case YELLOW -> {
-                yellow[number] = true;
+                yellow[number - 2] = true;
                 furthestYellow = number;
+                if(number == 12 && game.lock(row)) {
+                    yellow[11] = true;
+                }
             }
             case BLUE -> {
-                blue[number] = true;
+                blue[2 - number] = true;
                 furthestBlue = number;
+                if(number == 2 && game.lock(row)) {
+                    blue[11] = true;
+                }
             }
             case GREEN -> {
-                green[number] = true;
+                green[2 - number] = true;
                 furthestGreen = number;
-            }
-        }
-        if(number == 12) {
-            if(game.lock(row)){
-                switch(row) {
-                    case RED -> red[11] = true;
-                    case YELLOW -> yellow[11] = true;
-                    case BLUE -> blue[11] = true;
-                    case GREEN -> green[11] = true;
+                if(number == 2 && game.lock(row)) {
+                    green[11] = true;
                 }
             }
         }

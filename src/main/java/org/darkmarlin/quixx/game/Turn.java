@@ -33,11 +33,11 @@ public class Turn  implements Comparable<Turn>{
         this.selfTurn = selfTurn;
     }
 
-    public Turn(PlaySheet.Rows playRow, int playNumber, PlaySheet.Rows secondPlayRow, boolean selfTurn) {
+    public Turn(PlaySheet.Rows playRow, int playNumber, PlaySheet.Rows secondPlayRow, int secondPlayNumber, boolean selfTurn) {
         this.playRow = playRow;
         this.playNumber = playNumber;
         this.secondPlayRow = secondPlayRow;
-        this.SecondPlayNumber = playNumber;
+        this.SecondPlayNumber = secondPlayNumber;
         doubleTurn = true;
         noTurn = false;
         this.selfTurn = selfTurn;
