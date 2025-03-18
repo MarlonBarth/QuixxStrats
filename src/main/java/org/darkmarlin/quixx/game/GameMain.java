@@ -136,4 +136,8 @@ public class GameMain {
             case null, default -> throw new IllegalStateException("Unexpected value: " + row);
         }
     }
+
+    public Player[] getPlayers() {
+        return players;
+    }
 }

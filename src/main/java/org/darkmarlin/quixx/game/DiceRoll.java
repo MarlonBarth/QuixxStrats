@@ -71,8 +71,10 @@ public class DiceRoll {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "WHITE: " + DiceNumber.getInteger(white[0]) + ", " + DiceNumber.getInteger(white[1]) + "; RED: " + DiceNumber.getInteger(red) + "; YELLOW: " + DiceNumber.getInteger(yellow) + ", GREEN: " + DiceNumber.getInteger(green) + ", BLUE: " + DiceNumber.getInteger(blue);
+    }
 
     public enum DiceNumber{
         DICE_1,DICE_2,DICE_3,DICE_4,DICE_5,DICE_6;

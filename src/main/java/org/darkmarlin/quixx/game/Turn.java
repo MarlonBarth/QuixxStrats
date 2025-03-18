@@ -83,4 +83,23 @@ public class Turn  implements Comparable<Turn>{
     public int compareTo(Turn o) {
         return o.weight - weight;
     }
+
+    @Override
+    public String toString() {
+        if(noTurn) return "NO TURN";
+        if(doubleTurn) {
+            return "First: " + playRow + ":" + playNumber + "; Second: " + secondPlayRow + ":" + SecondPlayNumber;
+        }else{
+            return "Only: " + playRow + ":" + playNumber;
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Turn other) {
+            return this.playRow == other.playRow && this.playNumber == other.playNumber && this.secondPlayRow == other.secondPlayRow && this.SecondPlayNumber == other.SecondPlayNumber;
+
+        }
+        return false;
+    }
 }

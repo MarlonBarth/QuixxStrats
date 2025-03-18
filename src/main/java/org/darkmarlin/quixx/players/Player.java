@@ -5,9 +5,7 @@ import org.darkmarlin.quixx.game.GameMain;
 import org.darkmarlin.quixx.game.PlaySheet;
 import org.darkmarlin.quixx.game.Turn;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Player implements Comparable<Player> {
     private GameMain game;
@@ -65,14 +63,14 @@ public class Player implements Comparable<Player> {
         int[] red = roll.getRed();
         for(int i:red){
             boolean possibleTurn = false;
-            for(int number: availableTurns[i]){
-                if(number == red[i]){
+            for(int number: availableTurns[0]){
+                if(number == i){
                     possibleTurn = true;
                     break;
                 }
             }
             if(possibleTurn){
-                redTurns.add(new Turn(PlaySheet.Rows.RED,red[i],true));
+                redTurns.add(new Turn(PlaySheet.Rows.RED,i,true));
             }
         }
 
@@ -81,14 +79,14 @@ public class Player implements Comparable<Player> {
         int[] yellow = roll.getYellow();
         for(int i:yellow){
             boolean possibleTurn = false;
-            for(int number: availableTurns[i]){
-                if(number == yellow[i]){
+            for(int number: availableTurns[1]){
+                if(number == i){
                     possibleTurn = true;
                     break;
                 }
             }
             if(possibleTurn){
-                yellowTurns.add(new Turn(PlaySheet.Rows.YELLOW,yellow[i],true));
+                yellowTurns.add(new Turn(PlaySheet.Rows.YELLOW,i,true));
             }
         }
 
@@ -97,14 +95,14 @@ public class Player implements Comparable<Player> {
         int[] green = roll.getGreen();
         for(int i:green){
             boolean possibleTurn = false;
-            for(int number: availableTurns[i]){
-                if(number == green[i]){
+            for(int number: availableTurns[2]){
+                if(number == i){
                     possibleTurn = true;
                     break;
                 }
             }
             if(possibleTurn){
-                greenTurns.add(new Turn(PlaySheet.Rows.GREEN,green[i],true));
+                greenTurns.add(new Turn(PlaySheet.Rows.GREEN,i,true));
             }
         }
 
@@ -113,17 +111,16 @@ public class Player implements Comparable<Player> {
         int[] blue = roll.getBlue();
         for(int i:blue){
             boolean possibleTurn = false;
-            for(int number: availableTurns[i]){
-                if(number == blue[i]){
+            for(int number: availableTurns[3]){
+                if(number == i){
                     possibleTurn = true;
                     break;
                 }
             }
             if(possibleTurn){
-                blueTurns.add(new Turn(PlaySheet.Rows.BLUE,blue[i],true));
+                blueTurns.add(new Turn(PlaySheet.Rows.BLUE,i,true));
             }
         }
-
         turns.addAll(redTurns);
         turns.addAll(yellowTurns);
         turns.addAll(greenTurns);
@@ -138,17 +135,42 @@ public class Player implements Comparable<Player> {
                         doubleTurns.add(new Turn(turn.getPlayRow(),turn.getPlayNumber(),otherTurn.getPlayRow(),otherTurn.getPlayNumber(),true));
                     }
                     else{
-                        if(turn.getPlayNumber() < otherTurn.getPlayNumber()){
-                            doubleTurns.add(new Turn(turn.getPlayRow(),turn.getPlayNumber(),otherTurn.getPlayRow(),otherTurn.getPlayNumber(),true));
+                        if(turn.getPlayRow() == PlaySheet.Rows.RED || turn.getPlayRow() == PlaySheet.Rows.YELLOW) {
+                            if (turn.getPlayNumber() < otherTurn.getPlayNumber()) {
+                                doubleTurns.add(new Turn(turn.getPlayRow(), turn.getPlayNumber(), otherTurn.getPlayRow(), otherTurn.getPlayNumber(), true));
+                            }
+                        }else{
+                            if (turn.getPlayNumber() > otherTurn.getPlayNumber()) {
+                                doubleTurns.add(new Turn(turn.getPlayRow(), turn.getPlayNumber(), otherTurn.getPlayRow(), otherTurn.getPlayNumber(), true));
+                            }
                         }
                     }
                 }
             }
         }
-        turns.addAll(doubleTurns);
+        turns = new ArrayList<>();
         turns.addAll(whiteTurns);
+
+        turns.addAll(redTurns);
+        turns.addAll(yellowTurns);
+        turns.addAll(greenTurns);
+        turns.addAll(blueTurns);
+
+        turns.addAll(doubleTurns);
         turns.add(new Turn(true));
-        return turns.toArray(new Turn[0]);
+        return distinctTurns(turns);
+    }
+
+    private Turn[] distinctTurns(List<Turn> turns){
+        HashSet<Turn> turnMap = new HashSet<>();
+        List<Turn> distinctTurns = new ArrayList<>();
+        for(Turn turn: turns){
+            if(!turnMap.contains(turn)){
+                turnMap.add(turn);
+                distinctTurns.add(turn);
+            }
+        }
+        return distinctTurns.toArray(new Turn[0]);
     }
 
     private Turn[] determineOtherTurns(DiceRoll roll){
@@ -173,9 +195,9 @@ public class Player implements Comparable<Player> {
 
     private void weighTurns(Turn[] turns, boolean selfTurn, DiceRoll roll) {
         if(selfTurn){
-            brain.weighSelfTurns(turns,roll,otherPlaySheets);
+            brain.weighSelfTurns(turns,roll,otherPlaySheets,playSheet);
         }else{
-            brain.weighOtherTurns(turns,roll,otherPlaySheets);
+            brain.weighOtherTurns(turns,roll,otherPlaySheets,playSheet);
         }
 
     }
@@ -204,5 +226,10 @@ public class Player implements Comparable<Player> {
     @Override
     public int compareTo(Player o) {
         return o.getScore() - getScore();
+    }
+
+    @Override
+    public String toString() {
+        return getName() + ": " + getScore() + "  (" + brain.getClass().getSimpleName() + ")";
     }
 }

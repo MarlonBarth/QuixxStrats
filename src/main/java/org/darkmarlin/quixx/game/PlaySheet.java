@@ -54,12 +54,6 @@ public class PlaySheet {
     }
 
     private void setCross(Rows row, int number){
-        boolean found = false;
-        for(int i: allowedMoves[row.getNumber()]){
-            if(number == i){found = true; break;}
-        }
-        if(!found){throw new IllegalArgumentException("This move is not allowed: " + row + ":" + number);}
-
         switch(row){
             case RED -> {
                 red[number - 2] = true;
@@ -76,14 +70,14 @@ public class PlaySheet {
                 }
             }
             case BLUE -> {
-                blue[2 - number] = true;
+                blue[12 - number] = true;
                 furthestBlue = number;
                 if(number == 2 && game.lock(row)) {
                     blue[11] = true;
                 }
             }
             case GREEN -> {
-                green[2 - number] = true;
+                green[12 - number] = true;
                 furthestGreen = number;
                 if(number == 2 && game.lock(row)) {
                     green[11] = true;
@@ -221,18 +215,6 @@ public class PlaySheet {
         };
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for(int[] row : allowedMoves){
-            for(int i : row){
-                builder.append(i).append(" ");
-            }
-            builder.append("\n");
-        }
-        return builder.toString();
-    }
-
     public boolean[] getRed() {
         return red;
     }
@@ -263,6 +245,72 @@ public class PlaySheet {
 
     public int getFurthestGreen() {
         return furthestGreen;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("RED:\t");
+        for(boolean b : red){
+            builder.append(b?"x":"o");
+        }
+        builder.append(" (");
+        for(int i = 0; i < red.length; i++){
+            if(red[i]){
+                if((i + 2) == furthestRed){
+                    builder.append("_").append(i+2);
+                }else {
+                    builder.append(i + 2).append(", ");
+                }
+            }
+        }
+        builder.append(")\n");
+        builder.append("YELLOW:\t");
+        for(boolean b : yellow){
+            builder.append(b?"x":"o");
+        }
+        builder.append(" (");
+        for(int i = 0; i < yellow.length; i++){
+            if(yellow[i]){
+                if((i + 2) == furthestYellow){
+                    builder.append("_").append(i+2);
+                }else {
+                    builder.append(i + 2).append(", ");
+                }
+            }
+        }
+        builder.append(")\n");
+        builder.append("BLUE:\t");
+        for(boolean b : blue){
+            builder.append(b?"x":"o");
+        }
+        builder.append(" (");
+        for(int i = 0; i < blue.length; i++){
+            if(blue[i]){
+                if((12 - i) == furthestBlue){
+                    builder.append("_").append(12-i);
+                }else{
+                    builder.append(12-i).append(", ");
+                }
+            }
+        }
+        builder.append(")\n");
+        builder.append("GREEN:\t");
+        for(boolean b : green){
+            builder.append(b?"x":"o");
+        }
+        builder.append(" (");
+        for(int i = 0; i < green.length; i++){
+            if(green[i]){
+                if((12 - i) == furthestGreen){
+                    builder.append("_").append(12-i);
+                }else{
+                    builder.append(12-i).append(", ");
+                }
+            }
+        }
+        builder.append(")\n");
+        return builder.toString();
     }
 
     public enum Rows{
